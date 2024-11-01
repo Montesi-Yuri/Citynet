@@ -45,7 +45,7 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8']
 
 export function TraguardiChart() {
   const [isMounted, setIsMounted] = useState(false)
-  const [dimensions, setDimensions] = useState({ width: 500, height: 300 })
+  const [dimensions, setDimensions] = useState({ width: 500, height: 250 })
 
   useEffect(() => {
     setIsMounted(true)
@@ -53,9 +53,11 @@ export function TraguardiChart() {
     const updateDimensions = () => {
       const width = window.innerWidth
       if (width < 768) { // mobile
-        setDimensions({ width: width - 40, height: dimensions.height })
+        setDimensions({ width: width - 40, height: 300 })
       } else { // desktop
-        setDimensions({ width: Math.min(dimensions.width, (width / 2) - 100), height: dimensions.height })
+        const calculatedWidth = Math.min(500, (width / 2) - 100)
+        const calculatedHeight = Math.min(250, window.innerHeight / 3)
+        setDimensions({ width: calculatedWidth, height: calculatedHeight })
       }
     }
 
@@ -146,14 +148,14 @@ export function TraguardiChart() {
             <PieChart
               width={dimensions.width}
               height={dimensions.height}
-              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              margin={{ top: 0, right: 30, left: 20, bottom: 40 }}
             >
               <Pie
                 data={clientiData}
-                cx={250}
-                cy={150}
+                cx={dimensions.width / 2}
+                cy={(dimensions.height - 60) / 2}
                 labelLine={false}
-                outerRadius={100}
+                outerRadius={Math.min(dimensions.width, dimensions.height - 80) / 4}
                 fill="#8884d8"
                 dataKey="valore"
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
@@ -163,7 +165,11 @@ export function TraguardiChart() {
                 ))}
               </Pie>
               <Tooltip contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '4px' }} />
-              <Legend />
+              <Legend 
+                verticalAlign="bottom" 
+                height={50}
+                wrapperStyle={{ bottom: 0 }}
+              />
             </PieChart>
           )}
         </CardContent>
